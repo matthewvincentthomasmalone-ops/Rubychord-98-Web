@@ -14,13 +14,28 @@ const { chromium } = require("playwright");
     await route.continue();
   });
   await page.goto(process.env.TEST_URL || "http://localhost:4173/");
+  // The production app begins its silent warm-up without a Power click.
+  await page.waitForFunction(
+    () => document.querySelector("#sampleStatus").textContent.includes("ready"),
+    null,
+    { timeout: 60000 },
+  );
+  assert.equal(
+    await page.locator("#power").getAttribute("aria-pressed"),
+    "false",
+  );
   const result = await page.evaluate(async () => {
     const { SampleEngine } = await import("./audio-engine.js");
     const engine = new SampleEngine();
     window.loadingTestEngine = engine;
+    const preloadStart = performance.now();
+    await engine.preload();
+    const preloadMilliseconds = performance.now() - preloadStart;
+    const poweredDuringPreload = engine.powered;
+    const contextBeforePower = engine.ctx.state;
     const start = performance.now();
     await engine.power(true);
-    const milliseconds = performance.now() - start;
+    const powerMilliseconds = performance.now() - start;
     const loaded = engine.samples.filter((s) => engine.buffers.has(s.source));
     const firstBytes = loaded.reduce((total, s) => total + s.deliveryBytes, 0);
     let backgroundFinished = false;
@@ -37,7 +52,10 @@ const { chromium } = require("playwright");
       startupCount: loaded.length,
       totalCount: engine.samples.length,
       firstBytes,
-      milliseconds,
+      preloadMilliseconds,
+      powerMilliseconds,
+      poweredDuringPreload,
+      contextBeforePower,
       allRecorded,
       backgroundFinished,
       afterStop: engine.voices.size,
@@ -46,6 +64,9 @@ const { chromium } = require("playwright");
   assert.ok(result.startupCount < result.totalCount);
   assert.ok(result.firstBytes < 12e6);
   assert.ok(result.allRecorded);
+  assert.equal(result.poweredDuringPreload, false);
+  assert.equal(result.contextBeforePower, "suspended");
+  assert.ok(result.powerMilliseconds < 250);
   assert.equal(result.backgroundFinished, false);
   assert.equal(result.afterStop, 0);
   release();

@@ -8,7 +8,7 @@ An independent, non-commercial browser instrument with an oxblood body and an OM
 python3 -m http.server 4173
 ```
 
-Open http://localhost:4173 and press **Power**. Wait for “Omni-84 ready to play”. Startup now loads the 34 essential recordings (about 6.7 MB) first; the rest load in the background. Chord changes prioritize their exact recordings while the remaining bank is loading. No build step, framework or runtime package install is required.
+Open http://localhost:4173. The page immediately downloads and decodes the 34 essential recordings (about 6.7 MB) while the instrument remains powered off and silent. Press **Power** to play; if the warm-up has completed, playback is immediate. The rest loads in the background. Chord changes prioritize their exact recordings while the remaining bank is loading. No build step, framework or runtime package install is required.
 
 ## Local sample library
 
@@ -31,7 +31,7 @@ Recordings live in `assets/audio/omni-84/Samples/`, preserving the library's Bas
 | Keyboard     |         32 | Melody mode and constructed sus4/add9 chords                 |
 | Drums        |         22 | Recorded hits; ten programmed rhythm patterns                |
 
-All 277 musical recordings are mono, 48 kHz, 24-bit PCM WAV. They occupy about 231 MiB on disk; decoded browser buffers require roughly 308 MiB before browser overhead. Lossless FLAC delivery files reduce the full transfer from 241.4 MB to 135.4 MB without changing a single PCM sample. `prepare_web_audio.py` requires FFmpeg and verifies every decoded FLAC against its original WAV. Originals remain available for browsers that cannot decode FLAC. Startup loads 34 recordings (~6.7 MB) and enables playback; the remaining recordings are cached in the background. Each new chord prioritizes its exact chord/string recordings. The loader deduplicates concurrent requests, and decoded buffers persist across Power cycles within the open page. Missing files are reported and only the affected sounds use the isolated temporary synth fallback.
+All 277 musical recordings are mono, 48 kHz, 24-bit PCM WAV. They occupy about 231 MiB on disk; decoded browser buffers require roughly 308 MiB before browser overhead. Lossless FLAC delivery files reduce the full transfer from 241.4 MB to 135.4 MB without changing a single PCM sample. `prepare_web_audio.py` requires FFmpeg and verifies every decoded FLAC against its original WAV. Originals remain available for browsers that cannot decode FLAC. Page startup immediately loads 34 recordings (~6.7 MB) with six parallel requests and enables playback readiness; the remaining recordings use three background workers and the browser's HTTP cache. Each new chord prioritizes its exact chord/string recordings. The loader deduplicates concurrent requests, and decoded buffers persist across Power cycles within the open page. Missing files are reported and only the affected sounds use the isolated temporary synth fallback.
 
 ### Pitch and loops
 
