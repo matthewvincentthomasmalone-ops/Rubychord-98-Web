@@ -97,6 +97,44 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
   }));
   assert.ok(layout.body < layout.keyboard);
   await page.screenshot({ path: "test-results/keyboard-open.png" });
+  // Fit mode may overlap the instrument, so its keyboard needs a readable underlay.
+  await page.locator("#fitToggle").click();
+  await page.waitForTimeout(500);
+  const fitKeyboard = await page
+    .locator("#keyboardOverlay")
+    .evaluate((panel) => ({
+      background: getComputedStyle(panel).backgroundColor,
+      overlaps:
+        panel.getBoundingClientRect().top <
+        document.querySelector("#instrument").getBoundingClientRect().bottom,
+    }));
+  assert.equal(fitKeyboard.background, "rgba(255, 216, 230, 0.78)");
+  assert.equal(fitKeyboard.overlaps, true);
+  await page.keyboard.down("r");
+  const fitGradient = await page
+    .locator('[data-code="KeyR"]')
+    .evaluate((el) => getComputedStyle(el).backgroundImage);
+  assert.ok(fitGradient.includes("rgba(199, 110, 146, 0.28)"));
+  assert.ok(fitGradient.includes("rgba(139, 43, 81, 0.46)"));
+  await page.screenshot({ path: "test-results/keyboard-fit-underlay.png" });
+  await page.keyboard.up("r");
+  await page.locator("#keyboardToggle").click();
+  await page.locator("#keyboardToggle").click();
+  await page.waitForTimeout(500);
+  assert.equal(
+    await page
+      .locator("#keyboardOverlay")
+      .evaluate((el) => getComputedStyle(el).backgroundColor),
+    "rgba(255, 216, 230, 0.78)",
+  );
+  await page.locator("#fitToggle").click();
+  await page.waitForTimeout(500);
+  assert.equal(
+    await page
+      .locator("#keyboardOverlay")
+      .evaluate((el) => getComputedStyle(el).backgroundColor),
+    "rgba(0, 0, 0, 0)",
+  );
   await page.locator("#power").click();
   assert.equal(await page.locator("#powerPlaque").isVisible(), false);
   assert.equal(await page.locator("#statusText").isVisible(), false);
@@ -262,7 +300,7 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
   assert.equal(await page.locator(".below button").count(), 1);
   assert.deepEqual(errors, []);
   console.log(
-    "PASS: non-interactive power plaque; only musical readouts, including combined and held chords; no Instant Off control or runtime messages; transparent slide-up keyboard; <50% pink fills; physical/pointer press and release; F♯/F♯m/F♯7 exact recorded chords; off-by-default drums; clean logo alpha; removed stripe; mobile and reduced motion.",
+    "PASS: Fit keyboard underlay and darker translucent highlights; Playing size restores transparency; non-interactive power plaque; only musical readouts, including combined and held chords; no Instant Off control or runtime messages; transparent slide-up keyboard; <50% pink fills; physical/pointer press and release; F♯/F♯m/F♯7 exact recorded chords; off-by-default drums; clean logo alpha; removed stripe; mobile and reduced motion.",
   );
   await browser.close();
 })();

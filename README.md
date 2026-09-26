@@ -59,6 +59,8 @@ Computer keys: Q–O major, A–L minor, Z–. seventh, ordered E♭ B♭ F C G 
 
 The bottom **Keyboard** button opens a transparent, playable keyboard guide. Physical computer keys and pointer/touch presses highlight its burgundy outlined keys with a pink radial fill (24% at the centre, 42% at the edge). The opened guide reserves space below the instrument; narrow screens can scroll the keyboard horizontally. The extra striped pad and Instant Off page control have been removed.
 
+In **Fit instrument** mode, the keyboard can overlap the instrument. A light pink underlay (78% opacity) keeps its burgundy outlines and labels readable, with darker pink key highlights (28% at the centre, 46% at the edge). Returning to Playing size restores the transparent keyboard.
+
 The bottom-left power instruction is a non-interactive cream-on-oxblood plaque. It disappears when the instrument is powered on. This corner then displays only the chord or keyboard notes being pressed, including combined and held chords. Releasing an unheld chord clears it. Loading details stay in Settings & playing guide; rhythm, voice and power status messages do not appear on the page.
 
 The instrument scales as one surface. Desktop scaling accounts for viewport height. Narrow screens retain a horizontally scrollable playing size; “Fit instrument” offers an overview. Landscape provides more playable room.

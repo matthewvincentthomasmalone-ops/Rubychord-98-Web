@@ -599,6 +599,7 @@ function resize() {
 }
 $("#fitToggle").addEventListener("click", () => {
   fit = !fit;
+  document.body.classList.toggle("fit-instrument", fit);
   setPressed("#fitToggle", fit);
   $("#fitToggle").textContent = fit ? "Playing size" : "Fit instrument";
   resize();
