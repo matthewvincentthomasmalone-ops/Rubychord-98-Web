@@ -10,7 +10,7 @@ from pathlib import Path
 SOURCE = Path(__file__).resolve().parents[1]
 RUNTIME = ['index.html', 'styles.css', 'app.js', 'audio-engine.js',
            'connections.js', 'fallback-synth.js', 'omnichord-controls.js',
-           'sample-manifest.json']
+           'sample-manifest.json', 'assets/la.webp']
 
 
 def main():
@@ -21,11 +21,16 @@ def main():
     if not (site / '.git').exists() or (site / 'CNAME').read_text().strip() != 'rubysite.us':
         parser.error('Expected the rubysite.us Git website checkout')
     manifest = json.loads((SOURCE / 'sample-manifest.json').read_text())
-    files = RUNTIME + [entry['source'] for entry in manifest['samples']]
+    files = RUNTIME + [entry['source'] for entry in manifest['samples']] + [entry['deliverySource'] for entry in manifest['samples'] if entry.get('deliverySource')]
     for entry in manifest['samples']:
         path = SOURCE / entry['source']
         if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != entry['sha256']:
             parser.error(f'Missing or changed local recording: {entry["source"]}')
+    for entry in manifest['samples']:
+        if entry.get('deliverySource'):
+            path = SOURCE / entry['deliverySource']
+            if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != entry['deliverySha256']:
+                parser.error(f'Missing or changed compact recording: {entry["deliverySource"]}')
     revision = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=SOURCE, text=True).strip()
     target = site / 'rubychord'
     for name in files:

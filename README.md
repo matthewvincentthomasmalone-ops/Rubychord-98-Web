@@ -8,7 +8,7 @@ An independent, non-commercial browser instrument with an oxblood body and an OM
 python3 -m http.server 4173
 ```
 
-Open http://localhost:4173 and press **Power**. The first gesture loads and decodes the sample bank; wait for “277 recordings ready”. No build step, framework or runtime package install is required.
+Open http://localhost:4173 and press **Power**. Wait for “Omni-84 ready to play”. Startup now loads the 34 essential recordings (about 6.7 MB) first; the rest load in the background. Chord changes prioritize their exact recordings while the remaining bank is loading. No build step, framework or runtime package install is required.
 
 ## Local sample library
 
@@ -18,6 +18,7 @@ On another checkout, import your own local copy:
 
 ```sh
 python3 tools/import_samples.py ~/Downloads/Omni-84-DecentSampler-2.1.0.zip
+python3 tools/prepare_web_audio.py
 ```
 
 Recordings live in `assets/audio/omni-84/Samples/`, preserving the library's Bass, Chords, Drums, Keyboard and SonicStrings/Voice1 and Voice2 names. These local audio files are **gitignored**. The deterministic `sample-manifest.json` and `docs/sample-audit.csv` contain the source filenames, roles, PCM details, durations, pitch/trigger mappings, loop points, gains, tuning and hashes. Raw recordings are unchanged. The ZIP's `IR/Space.wav` is inventoried but not imported into the dry engine.
@@ -30,7 +31,7 @@ Recordings live in `assets/audio/omni-84/Samples/`, preserving the library's Bas
 | Keyboard     |         32 | Melody mode and constructed sus4/add9 chords                 |
 | Drums        |         22 | Recorded hits; ten programmed rhythm patterns                |
 
-All 277 musical recordings are mono, 48 kHz, 24-bit PCM WAV. They occupy about 231 MiB on disk; decoded browser buffers require roughly 308 MiB before browser overhead. All are cached after the first Power gesture to avoid fetch/decode work during playing. Missing files are reported and only the affected sounds use the isolated temporary synth fallback.
+All 277 musical recordings are mono, 48 kHz, 24-bit PCM WAV. They occupy about 231 MiB on disk; decoded browser buffers require roughly 308 MiB before browser overhead. Lossless FLAC delivery files reduce the full transfer from 241.4 MB to 135.4 MB without changing a single PCM sample. `prepare_web_audio.py` requires FFmpeg and verifies every decoded FLAC against its original WAV. Originals remain available for browsers that cannot decode FLAC. Startup loads 34 recordings (~6.7 MB) and enables playback; the remaining recordings are cached in the background. Each new chord prioritizes its exact chord/string recordings. The loader deduplicates concurrent requests, and decoded buffers persist across Power cycles within the open page. Missing files are reported and only the affected sounds use the isolated temporary synth fallback.
 
 ### Pitch and loops
 
@@ -106,6 +107,8 @@ Optional browser regression checks require Playwright (tested with 1.51.1), Chro
 npm install --prefix /tmp/rubychord-tests playwright@1.51.1
 NODE_PATH=/tmp/rubychord-tests/node_modules node tests/browser.cjs
 NODE_PATH=/tmp/rubychord-tests/node_modules node tests/audio.cjs
+NODE_PATH=/tmp/rubychord-tests/node_modules node tests/loading.cjs
+NODE_PATH=/tmp/rubychord-tests/node_modules node tests/presentation.cjs
 ```
 
 Set `CHROME_PATH` if Chrome is not at `/usr/bin/google-chrome`. Screenshots are written to ignored `test-results/`.
@@ -133,3 +136,9 @@ Pages. The source repository excludes audio; the website deployment includes
 it so published playback uses the same recordings as local playback. Source
 pushes alone do not automatically update the website. This packaging step
 preserves other website pages.
+
+The September 26 refinement restores the original washed-out Los Angeles image
+and pink overlay. Cream faceplate outlines use separate SVG paths. Panels and
+the speaker remain inside the inset body border with measurable gaps between
+strokes; chord guide lines were removed to avoid intersections. Pointer clicks
+on Power do not show a focus outline; keyboard focus retains an inset indicator.

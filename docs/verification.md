@@ -21,3 +21,11 @@ The recognizable arrangement is reproduced: rounded left body, tapered speaker e
 ## Not verified / remaining limitations
 
 No subjective listening comparison against Online Omnichord or a physical OM-108. No claim of audible click-free loops across the entire library, calibrated levels, exact noise floor, speaker response, hardware-like saturation or measured end-to-end latency. Only representative pitches were measured spectrally; mapping of the rest follows the source preset convention. Browser automation does not prove natural multitouch feel on a device. Firefox/Safari and actual MIDI/Serial hardware were not exercised. Exact digital voices, accompaniment timing and full hardware keyboard/special-function logic require further source recordings and hardware comparison; see README.
+
+## September 26 refinement
+
+- All 277 lossless FLAC delivery files were decoded with FFmpeg and compared byte-for-byte with their original 24-bit WAV PCM. Full transfer: 241.4 MB → 135.4 MB.
+- Staged loading test holds an unrelated recording request open: playback becomes available after 34 recordings (~6.7 MB), and default chord/string voices are all AudioBuffer sources while background loading remains incomplete. Pending loading does not block Instant Off.
+- Original audio regression suite still passes with FLAC delivery and staged loading; full background decode reaches 277 recordings.
+- Geometry checks sample every panel/speaker perimeter against the inset body boundary. All outlines remain inside, with ≥5 design pixels of separation from the body border and from one another. Removed diagonal chord guide lines and moved/re-shaped panels that previously crossed the rim.
+- Power pointer click has computed outline style `none`. Restored the original LA image and pink overlay, with desktop/tablet/mobile screenshot review.

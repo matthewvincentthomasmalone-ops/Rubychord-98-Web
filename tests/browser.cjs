@@ -15,7 +15,7 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
     if (m.type() === "error") errors.push(m.text());
   });
   await page.goto("http://localhost:4173");
-  await page.screenshot({ path: "test-results/desktop.png", fullPage: true });
+  await page.screenshot({ path: "test-results/desktop.png", fullPage: false });
   console.log("buttons", await page.locator(".chord-button").count());
   await page.locator("#power").click();
   await page.waitForFunction(
@@ -70,12 +70,12 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
   ]) {
     await page.setViewportSize({ width, height });
     await page.waitForTimeout(100);
-    await page.screenshot({ path: `test-results/${name}.png`, fullPage: true });
+    await page.screenshot({ path: `test-results/${name}.png`, fullPage: false });
   }
   await page.locator("#fitToggle").click();
   await page.screenshot({
     path: "test-results/mobile-fit.png",
-    fullPage: true,
+    fullPage: false,
   });
   console.log("errors", errors);
   await browser.close();
