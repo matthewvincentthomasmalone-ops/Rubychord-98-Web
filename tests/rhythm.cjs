@@ -24,6 +24,16 @@ const { chromium } = require("playwright");
     await route.continue();
   });
   await page.goto(process.env.TEST_URL || "http://localhost:4173/");
+  assert.equal(
+    await page.locator("#syncStart").getAttribute("aria-pressed"),
+    "false",
+  );
+  assert.equal(
+    await page
+      .locator("#syncLight")
+      .evaluate((el) => el.classList.contains("on")),
+    false,
+  );
   await page.locator("#power").click();
   await page.waitForFunction(() => rhythmTestEngine.playable);
   const running = () => page.evaluate(() => !!rhythmTestEngine.rhythmTimer);
@@ -52,7 +62,19 @@ const { chromium } = require("playwright");
   };
   assert.equal(await running(), false);
 
-  // Sync latches on a quick tap, independently of a pending chord download.
+  // Fresh power-on and chord/keyboard input cannot start drums by default.
+  await cMajor.click();
+  await page.keyboard.press("p");
+  await page.waitForTimeout(150);
+  assert.equal(await running(), false);
+  assert.equal(
+    await page.evaluate(() => rhythmTestEngine.settings.sync),
+    false,
+  );
+  await page.locator("#syncStart").click();
+  assert.equal(await running(), false);
+
+  // Explicitly armed Sync latches on a quick tap, independently of a pending chord download.
   await page.locator('[data-root="2"][data-quality="major"]').click();
   await waitStarted();
   assert.equal(await page.evaluate(() => rhythmTestEngine.chordActive), false);
@@ -175,7 +197,7 @@ const { chromium } = require("playwright");
   assert.deepEqual(cancellation, { stopped: true, cycled: true });
   assert.deepEqual(errors, []);
   console.log(
-    "PASS: Start/Stop preserves volume and stays stopped across chord presses; explicit Sync quick taps and keyboard notes start continuous drums; Instant Off/Space stop all sound; release and pending loads cannot undo manual stop; Power stops audio.",
+    "PASS: drums and Sync are off by default; Start/Stop preserves volume and stays stopped across chord presses; explicit Sync quick taps and keyboard notes start continuous drums; Instant Off/Space stop all sound; release and pending loads cannot undo manual stop; Power stops audio.",
   );
   await browser.close();
 })();
