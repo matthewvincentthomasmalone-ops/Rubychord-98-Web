@@ -21,15 +21,30 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
   });
   await page.goto(process.env.TEST_URL || "http://localhost:4173/");
   assert.equal(
-    (await page.locator("#statusText").textContent()).trim(),
-    "Power on to start your Rubychord -98",
+    (await page.locator("#powerPlaque").textContent()).trim(),
+    "Power on to start Rubychord98",
   );
+  assert.equal(await page.locator("#statusText").isVisible(), false);
+  assert.deepEqual(
+    await page.locator("#powerPlaque").evaluate((el) => ({
+      tag: el.tagName,
+      tabIndex: el.tabIndex,
+      pointerEvents: getComputedStyle(el).pointerEvents,
+    })),
+    { tag: "P", tabIndex: -1, pointerEvents: "none" },
+  );
+  await page.keyboard.press("r");
+  assert.equal(
+    await page.locator("#power").getAttribute("aria-pressed"),
+    "false",
+  );
+  assert.equal(await page.locator("#powerPlaque").isVisible(), true);
   assert.equal(await page.locator(".computer-key").count(), 58);
   assert.equal(
     await page.locator("#keyboardOverlay").evaluate((el) => el.inert),
     true,
   );
-  assert.equal(await page.locator("#instrument #instantOff").count(), 0);
+  assert.equal(await page.locator("#instantOff").count(), 0);
   assert.equal(
     await page
       .locator("#instrument")
@@ -83,11 +98,14 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
   assert.ok(layout.body < layout.keyboard);
   await page.screenshot({ path: "test-results/keyboard-open.png" });
   await page.locator("#power").click();
+  assert.equal(await page.locator("#powerPlaque").isVisible(), false);
+  assert.equal(await page.locator("#statusText").isVisible(), false);
   await page.waitForFunction(() => keyboardTestEngine.playable);
+  assert.equal(await page.locator("#statusText").isVisible(), false);
   await page.keyboard.down("r");
   await page.keyboard.down("v");
   assert.equal(await page.locator(".computer-key.key-active").count(), 2);
-  assert.ok((await page.locator("#statusText").textContent()).includes("CM7"));
+  assert.equal(await page.locator("#statusText").textContent(), "CM7");
   assert.equal(
     await page
       .locator("#keyboardToggle")
@@ -104,7 +122,32 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
   assert.ok(alpha.every((value) => value > 0 && value <= 0.5));
   await page.screenshot({ path: "test-results/keyboard-highlight.png" });
   await page.keyboard.up("v");
+  assert.equal(await page.locator("#statusText").textContent(), "C");
   await page.keyboard.up("r");
+  assert.equal(await page.locator("#statusText").isVisible(), false);
+  assert.equal(await page.locator("#statusText").textContent(), "");
+  // Controls and sample-loading messages cannot replace a held chord readout.
+  await page.locator("#chordHold").click();
+  await page.keyboard.press("r");
+  await page.locator("#rhythmStart").click();
+  await page.waitForFunction(() => !!keyboardTestEngine.rhythmTimer);
+  assert.equal(await page.locator("#statusText").textContent(), "C");
+  await page.locator("#rhythmStart").click();
+  await page.locator("#autoBass").click();
+  await page
+    .locator("#voiceSelectors .selector")
+    .nth(2)
+    .locator("button")
+    .click();
+  assert.equal(await page.locator("#statusText").textContent(), "C");
+  await page
+    .locator("#voiceSelectors .selector")
+    .nth(1)
+    .locator("button")
+    .click();
+  await page.locator("#autoBass").click();
+  await page.locator("#chordHold").click();
+  assert.equal(await page.locator("#statusText").isVisible(), false);
   assert.equal(await page.locator(".computer-key.key-active").count(), 0);
   for (const [letter, quality, code] of [
     ["p", "major", "KeyP"],
@@ -164,6 +207,7 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
     false,
   );
   await page.mouse.up();
+  assert.equal(await page.locator("#statusText").isVisible(), false);
   await page.locator("#keyboardToggle").click();
   await page.waitForTimeout(500);
   const number = await page.locator('[data-code="Digit1"]').boundingBox();
@@ -175,6 +219,19 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
     await page.locator("#strumplate").getAttribute("aria-valuenow"),
     "1",
   );
+  await page.locator("#keyboard").click();
+  await page.keyboard.down("r");
+  assert.equal(await page.locator("#statusText").textContent(), "F3");
+  await page.keyboard.up("r");
+  assert.equal(await page.locator("#statusText").isVisible(), false);
+  await page.locator("#keyboard").click();
+  await page.keyboard.down("r");
+  assert.equal(await page.locator("#statusText").textContent(), "C");
+  await page.evaluate(() => document.activeElement.blur());
+  await page.keyboard.press("Space");
+  assert.equal(await page.locator("#statusText").isVisible(), false);
+  assert.equal(await page.locator("#statusText").textContent(), "");
+  await page.keyboard.up("r");
   await page.setViewportSize({ width: 390, height: 844 });
   await page.waitForTimeout(500);
   const mobile = await page.evaluate(() => {
@@ -200,9 +257,12 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
     "0s",
   );
   await page.locator("#power").click();
+  assert.equal(await page.locator("#powerPlaque").isVisible(), true);
+  assert.equal(await page.locator("#statusText").isVisible(), false);
+  assert.equal(await page.locator(".below button").count(), 1);
   assert.deepEqual(errors, []);
   console.log(
-    "PASS: transparent slide-up keyboard; <50% pink fills; physical/pointer press and release; F♯/F♯m/F♯7 exact recorded chords; off-by-default drums; clean logo alpha; removed stripe; mobile and reduced motion.",
+    "PASS: non-interactive power plaque; only musical readouts, including combined and held chords; no Instant Off control or runtime messages; transparent slide-up keyboard; <50% pink fills; physical/pointer press and release; F♯/F♯m/F♯7 exact recorded chords; off-by-default drums; clean logo alpha; removed stripe; mobile and reduced motion.",
   );
   await browser.close();
 })();

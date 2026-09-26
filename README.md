@@ -51,13 +51,15 @@ Preset chord and keyboard loop points are converted from source frames to second
 - **Chord Hold:** retain the selected chord after release. **Manual/Auto:** sustained chord versus sequenced chord and bass.
 - **Rhythm Start/Stop and Sync Start:** drums and Sync Start are off by default. The blue Rhythm button starts drums immediately. While drums are playing, press it again to stop them without changing Rhythm Volume. Stopped drums stay off while you play. Click the Sync Start control to arm drums for the next chord/keyboard-note press; click it again to disarm. Releasing a note leaves drums playing. Pattern/keyboard mode changes retain the beat. Power Off stops the instrument.
 - **Strumplate:** tap or sweep vertically; higher zones are at the top. Fast pointer moves trigger every crossed region. Pointer capture and per-pointer tracking support touch.
-- **Instant Off / Space:** fade out all voices and stop drums, including pending note/rhythm requests.
+- **Space:** fade out all voices and stop drums, including pending note/rhythm requests.
 - **Keyboard:** chord buttons play individual sampled keyboard notes and the strumplate triggers drums. This is a simplified keyboard mode, not the complete hardware overlay map.
 - **Knobs:** drag vertically, Shift-drag for finer adjustment, mouse wheel, arrows, Page Up/Down, Home/End. Accessible values exist without faceplate numeric readouts.
 
 Computer keys: Q–O major, A–L minor, Z–. seventh, ordered E♭ B♭ F C G D A E B. P gives F♯ major, ; (or :) gives F♯ minor, and / (or ?) gives F♯ seventh. 1–= gives the first twelve strum regions, + the thirteenth. Keyboard and connection instructions are in the external settings drawer.
 
-The bottom **Keyboard** button opens a transparent, playable keyboard guide. Physical computer keys and pointer/touch presses highlight its burgundy outlined keys with a pink radial fill (24% at the centre, 42% at the edge). The opened guide reserves space below the instrument; narrow screens can scroll the keyboard horizontally. **Instant Off** is now a plain page control beside Fit instrument; the extra striped pad has been removed from the instrument body.
+The bottom **Keyboard** button opens a transparent, playable keyboard guide. Physical computer keys and pointer/touch presses highlight its burgundy outlined keys with a pink radial fill (24% at the centre, 42% at the edge). The opened guide reserves space below the instrument; narrow screens can scroll the keyboard horizontally. The extra striped pad and Instant Off page control have been removed.
+
+The bottom-left power instruction is a non-interactive cream-on-oxblood plaque. It disappears when the instrument is powered on. This corner then displays only the chord or keyboard notes being pressed, including combined and held chords. Releasing an unheld chord clears it. Loading details stay in Settings & playing guide; rhythm, voice and power status messages do not appear on the page.
 
 The instrument scales as one surface. Desktop scaling accounts for viewport height. Narrow screens retain a horizontally scrollable playing size; “Fit instrument” offers an overview. Landscape provides more playable room.
 

@@ -122,7 +122,8 @@ const { chromium } = require("playwright");
   await page.locator("#syncStart").click();
   await cMajor.click(); // Sampled keyboard note in keyboard mode.
   await waitStarted();
-  await page.locator("#instantOff").click();
+  await page.evaluate(() => document.activeElement.blur());
+  await page.keyboard.press("Space");
   await waitStopped();
   assert.equal(await volume(), "0.4");
 
@@ -197,7 +198,7 @@ const { chromium } = require("playwright");
   assert.deepEqual(cancellation, { stopped: true, cycled: true });
   assert.deepEqual(errors, []);
   console.log(
-    "PASS: drums and Sync are off by default; Start/Stop preserves volume and stays stopped across chord presses; explicit Sync quick taps and keyboard notes start continuous drums; Instant Off/Space stop all sound; release and pending loads cannot undo manual stop; Power stops audio.",
+    "PASS: drums and Sync are off by default; Start/Stop preserves volume and stays stopped across chord presses; explicit Sync quick taps and keyboard notes start continuous drums; Space stops all sound; release and pending loads cannot undo manual stop; Power stops audio.",
   );
   await browser.close();
 })();

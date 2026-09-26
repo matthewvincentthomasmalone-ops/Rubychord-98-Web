@@ -43,7 +43,8 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
     await page.locator("#strumplate").getAttribute("aria-valuenow"),
   );
   await page.mouse.up();
-  await page.locator("#instantOff").click();
+  await page.evaluate(() => document.activeElement.blur());
+  await page.keyboard.press("Space");
   await page.locator("#autoBass").click();
   await page.keyboard.press("r");
   await page.waitForTimeout(400);
@@ -58,7 +59,8 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
   await page.keyboard.down("r");
   await page.waitForTimeout(100);
   await page.keyboard.up("r");
-  await page.locator("#instantOff").click();
+  await page.evaluate(() => document.activeElement.blur());
+  await page.keyboard.press("Space");
   await page.locator("[data-midi-control=master]").focus();
   await page.keyboard.press("ArrowUp");
   console.log("master", await page.locator("#master").inputValue());
@@ -70,7 +72,10 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
   ]) {
     await page.setViewportSize({ width, height });
     await page.waitForTimeout(100);
-    await page.screenshot({ path: `test-results/${name}.png`, fullPage: false });
+    await page.screenshot({
+      path: `test-results/${name}.png`,
+      fullPage: false,
+    });
   }
   await page.locator("#fitToggle").click();
   await page.screenshot({
