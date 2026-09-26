@@ -72,13 +72,20 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
   });
   assert.ok(logo.width > 500);
   assert.equal(logo.alpha, 0);
+  const instrumentBefore = await page.locator("#instrument").boundingBox();
   await page.locator("#keyboardToggle").click();
   await page.waitForTimeout(500);
-  for (const selector of [
-    "#keyboardOverlay",
-    "#computerKeyboard",
-    ".computer-key",
-  ])
+  assert.deepEqual(
+    await page.locator("#instrument").boundingBox(),
+    instrumentBefore,
+  );
+  assert.equal(
+    await page
+      .locator("#keyboardOverlay")
+      .evaluate((el) => getComputedStyle(el).backgroundColor),
+    "rgba(255, 216, 230, 0.78)",
+  );
+  for (const selector of ["#computerKeyboard", ".computer-key"])
     assert.equal(
       await page
         .locator(selector)
@@ -90,14 +97,33 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
     await page.locator("#keyboardOverlay").evaluate((el) => el.inert),
     false,
   );
-  const layout = await page.evaluate(() => ({
-    body: document.querySelector("#instrument").getBoundingClientRect().bottom,
-    keyboard: document.querySelector("#keyboardOverlay").getBoundingClientRect()
-      .top,
-  }));
-  assert.ok(layout.body < layout.keyboard);
+  const layout = await page.evaluate(() => {
+    const panel = document
+        .querySelector("#keyboardOverlay")
+        .getBoundingClientRect(),
+      toggle = document
+        .querySelector("#keyboardToggle")
+        .getBoundingClientRect(),
+      fit = document.querySelector("#fitToggle").getBoundingClientRect();
+    return {
+      width: panel.width,
+      left: panel.left,
+      right: panel.right,
+      fitRight: fit.right,
+      controlGap: fit.left - toggle.right,
+      belowPanel: toggle.top > panel.bottom,
+      fitsKeys:
+        document.querySelector("#keyboardOverlay").scrollWidth <= panel.width,
+    };
+  });
+  assert.ok(layout.width <= 820);
+  assert.ok(layout.left > 500);
+  assert.ok(Math.abs(layout.right - layout.fitRight) < 1);
+  assert.ok(layout.controlGap > 0 && layout.controlGap <= 24);
+  assert.equal(layout.belowPanel, true);
+  assert.equal(layout.fitsKeys, true);
   await page.screenshot({ path: "test-results/keyboard-open.png" });
-  // Fit mode may overlap the instrument, so its keyboard needs a readable underlay.
+  // Both modes use the same underlay; opening the keyboard never resizes the body.
   await page.locator("#fitToggle").click();
   await page.waitForTimeout(500);
   const fitKeyboard = await page
@@ -118,9 +144,19 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
   assert.ok(fitGradient.includes("rgba(139, 43, 81, 0.46)"));
   await page.screenshot({ path: "test-results/keyboard-fit-underlay.png" });
   await page.keyboard.up("r");
-  await page.locator("#keyboardToggle").click();
+  const fitInstrumentBefore = await page.locator("#instrument").boundingBox();
   await page.locator("#keyboardToggle").click();
   await page.waitForTimeout(500);
+  assert.deepEqual(
+    await page.locator("#instrument").boundingBox(),
+    fitInstrumentBefore,
+  );
+  await page.locator("#keyboardToggle").click();
+  await page.waitForTimeout(500);
+  assert.deepEqual(
+    await page.locator("#instrument").boundingBox(),
+    fitInstrumentBefore,
+  );
   assert.equal(
     await page
       .locator("#keyboardOverlay")
@@ -133,7 +169,11 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
     await page
       .locator("#keyboardOverlay")
       .evaluate((el) => getComputedStyle(el).backgroundColor),
-    "rgba(0, 0, 0, 0)",
+    "rgba(255, 216, 230, 0.78)",
+  );
+  assert.deepEqual(
+    await page.locator("#instrument").boundingBox(),
+    instrumentBefore,
   );
   await page.locator("#power").click();
   assert.equal(await page.locator("#powerPlaque").isVisible(), false);
@@ -165,6 +205,9 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
   assert.equal(await page.locator("#statusText").isVisible(), false);
   assert.equal(await page.locator("#statusText").textContent(), "");
   // Controls and sample-loading messages cannot replace a held chord readout.
+  // Close the overlay to reach the real-time controls beneath it.
+  await page.locator("#keyboardToggle").click();
+  await page.waitForTimeout(500);
   await page.locator("#chordHold").click();
   await page.keyboard.press("r");
   await page.locator("#rhythmStart").click();
@@ -186,6 +229,8 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
   await page.locator("#autoBass").click();
   await page.locator("#chordHold").click();
   assert.equal(await page.locator("#statusText").isVisible(), false);
+  await page.locator("#keyboardToggle").click();
+  await page.waitForTimeout(500);
   assert.equal(await page.locator(".computer-key.key-active").count(), 0);
   for (const [letter, quality, code] of [
     ["p", "major", "KeyP"],
@@ -284,13 +329,29 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
         .getBoundingClientRect();
     return {
       scrollable: panel.scrollWidth > panel.clientWidth,
-      center: button.x + button.width / 2,
-      body: document.querySelector("#instrument").getBoundingClientRect().right,
+      buttonLeft: button.left,
+      buttonRight: button.right,
+      fitLeft: document.querySelector("#fitToggle").getBoundingClientRect()
+        .left,
+      bodyWidth: document.querySelector("#instrument").getBoundingClientRect()
+        .width,
+      pageWidth: document.documentElement.scrollWidth,
     };
   });
   assert.ok(mobile.scrollable);
-  assert.ok(Math.abs(mobile.center - 195) < 1);
-  assert.ok(mobile.body < 391);
+  assert.ok(mobile.buttonLeft > 0 && mobile.buttonRight < mobile.fitLeft);
+  assert.ok(mobile.bodyWidth >= 880);
+  assert.ok(mobile.pageWidth <= 390);
+  const mobileBefore = await page.locator("#instrument").boundingBox();
+  await page.locator("#keyboardToggle").click();
+  await page.locator("#keyboardToggle").click();
+  await page.waitForTimeout(500);
+  assert.deepEqual(
+    await page.locator("#instrument").boundingBox(),
+    mobileBefore,
+  );
+  await page.locator("#fitToggle").click();
+  assert.ok((await page.locator("#instrument").boundingBox()).width < 391);
   await page.screenshot({ path: "test-results/keyboard-mobile.png" });
   await page.emulateMedia({ reducedMotion: "reduce" });
   assert.equal(
@@ -302,10 +363,10 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
   await page.locator("#power").click();
   assert.equal(await page.locator("#powerPlaque").isVisible(), true);
   assert.equal(await page.locator("#statusText").isVisible(), false);
-  assert.equal(await page.locator(".below button").count(), 1);
+  assert.equal(await page.locator(".below button").count(), 2);
   assert.deepEqual(errors, []);
   console.log(
-    "PASS: Fit keyboard underlay and darker translucent highlights; Playing size restores transparency; non-interactive power plaque; only musical readouts, including combined and held chords; no Instant Off control or runtime messages; transparent slide-up keyboard; <50% pink fills; physical/pointer press and release; F♯/F♯m/F♯7 exact recorded chords; off-by-default drums; clean logo alpha; removed stripe; mobile and reduced motion.",
+    "PASS: compact lower-right keyboard with adjacent controls; instrument size and position preserved in normal, Fit and mobile modes; pink underlay and translucent highlights in both modes; note readouts; pointer and physical keys; exact F♯ samples; off-by-default drums; clean logo; mobile and reduced motion.",
   );
   await browser.close();
 })();

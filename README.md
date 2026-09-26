@@ -57,9 +57,7 @@ Preset chord and keyboard loop points are converted from source frames to second
 
 Computer keys: Q–O major, A–L minor, Z–. seventh, ordered E♭ B♭ F C G D A E B. P gives F♯ major, ; (or :) gives F♯ minor, and / (or ?) gives F♯ seventh. 1–= gives the first twelve strum regions, + the thirteenth. Keyboard and connection instructions are in the external settings drawer.
 
-The bottom **Keyboard** button opens a transparent, playable keyboard guide. Physical computer keys and pointer/touch presses highlight its burgundy outlined keys with a pink radial fill (24% at the centre, 42% at the edge). The opened guide reserves space below the instrument; narrow screens can scroll the keyboard horizontally. The extra striped pad and Instant Off page control have been removed.
-
-In **Fit instrument** mode, the keyboard can overlap the instrument. A light pink underlay (78% opacity) keeps its burgundy outlines and labels readable, with darker pink key highlights (28% at the centre, 46% at the edge). Returning to Playing size restores the transparent keyboard.
+The bottom-right **Keyboard** button sits beside **Fit instrument** and slides a compact, playable keyboard up into the lower-right space. Opening it preserves the instrument's size and position in both modes. A light pink underlay (78% opacity) keeps the burgundy outlines and labels readable over the instrument, with translucent pink key highlights (28% at the centre, 46% at the edge). The keyboard is at most 820px wide; narrow screens can scroll its keys horizontally. The extra striped pad and Instant Off page control have been removed.
 
 The bottom-left power instruction is a non-interactive cream-on-oxblood plaque. It disappears when the instrument is powered on. This corner then displays only the chord or keyboard notes being pressed, including combined and held chords. Releasing an unheld chord clears it. Loading details stay in Settings & playing guide; rhythm, voice and power status messages do not appear on the page.
 
