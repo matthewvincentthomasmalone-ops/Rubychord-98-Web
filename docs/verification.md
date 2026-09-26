@@ -36,3 +36,10 @@ No subjective listening comparison against Online Omnichord or a physical OM-108
 - Sync Start latches from a brief chord or keyboard-note press even while an unrelated chord recording is blocked. Releasing buttons does not stop drums. Pattern/keyboard-mode changes and window blur retain an active beat.
 - Instant Off and Space stop every sound. Pending first-load rhythm requests are cancelled by explicit stop and by Power cycles. Releasing one key in a held chord combination cannot undo a manual stop.
 - Simulated Serial `RHYTHM STOP` still invokes the actual rhythm stop command; no volume mutation is substituted.
+
+## Transparent keyboard and body update
+
+- `tests/keyboard-view.cjs`: transparent panel, board and idle keys; pink active gradient alpha 0.24/0.42; physical-key combinations and releases; pointer activation and closing while held; correct sampled F♯/F♯m/F♯7 recordings for P, ;/: and /?; default drums remain off.
+- Verified 58 displayed keys, slide-up open/close state and inert closed controls; desktop keyboard stays below the instrument; mobile keyboard scrolls horizontally and the instrument fits above it. Reduced-motion mode disables transitions.
+- Logo PNG has actual alpha and no white outer rectangle. Screenshot-reviewed new cream button shades, logo placement, status plaque, Keyboard button, and the removed striped Instant Off pad. Instant Off remains available beside Fit instrument.
+- Existing controls, MIDI/Serial, rhythm, staged sample loading and presentation geometry checks passed; no browser errors.

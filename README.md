@@ -55,7 +55,9 @@ Preset chord and keyboard loop points are converted from source frames to second
 - **Keyboard:** chord buttons play individual sampled keyboard notes and the strumplate triggers drums. This is a simplified keyboard mode, not the complete hardware overlay map.
 - **Knobs:** drag vertically, Shift-drag for finer adjustment, mouse wheel, arrows, Page Up/Down, Home/End. Accessible values exist without faceplate numeric readouts.
 
-Computer keys: Q–O major, A–L minor, Z–. seventh, ordered E♭ B♭ F C G D A E B. P gives F♯ major. 1–= gives the first twelve strum regions, + the thirteenth. Keyboard and connection instructions are in the external settings drawer.
+Computer keys: Q–O major, A–L minor, Z–. seventh, ordered E♭ B♭ F C G D A E B. P gives F♯ major, ; (or :) gives F♯ minor, and / (or ?) gives F♯ seventh. 1–= gives the first twelve strum regions, + the thirteenth. Keyboard and connection instructions are in the external settings drawer.
+
+The bottom **Keyboard** button opens a transparent, playable keyboard guide. Physical computer keys and pointer/touch presses highlight its burgundy outlined keys with a pink radial fill (24% at the centre, 42% at the edge). The opened guide reserves space below the instrument; narrow screens can scroll the keyboard horizontally. **Instant Off** is now a plain page control beside Fit instrument; the extra striped pad has been removed from the instrument body.
 
 The instrument scales as one surface. Desktop scaling accounts for viewport height. Narrow screens retain a horizontally scrollable playing size; “Fit instrument” offers an overview. Landscape provides more playable room.
 
@@ -111,6 +113,7 @@ NODE_PATH=/tmp/rubychord-tests/node_modules node tests/audio.cjs
 NODE_PATH=/tmp/rubychord-tests/node_modules node tests/loading.cjs
 NODE_PATH=/tmp/rubychord-tests/node_modules node tests/presentation.cjs
 NODE_PATH=/tmp/rubychord-tests/node_modules node tests/rhythm.cjs
+NODE_PATH=/tmp/rubychord-tests/node_modules node tests/keyboard-view.cjs
 ```
 
 Set `CHROME_PATH` if Chrome is not at `/usr/bin/google-chrome`. Screenshots are written to ignored `test-results/`.

@@ -10,7 +10,7 @@ from pathlib import Path
 SOURCE = Path(__file__).resolve().parents[1]
 RUNTIME = ['index.html', 'styles.css', 'app.js', 'audio-engine.js',
            'connections.js', 'fallback-synth.js', 'omnichord-controls.js',
-           'sample-manifest.json', 'assets/la.webp']
+           'sample-manifest.json', 'keyboard-view.js', 'assets/la.webp', 'assets/rubychord-logo.png']
 
 
 def main():
