@@ -122,10 +122,11 @@ const { chromium } = require("playwright");
   await page.locator("#syncStart").click();
   await cMajor.click(); // Sampled keyboard note in keyboard mode.
   await waitStarted();
-  await page.evaluate(() => document.activeElement.blur());
+  // Space must stop everything even while a chord button retains focus.
   await page.keyboard.press("Space");
   await waitStopped();
   assert.equal(await volume(), "0.4");
+  assert.equal(await page.evaluate(() => rhythmTestEngine.midiVoices.size), 0);
 
   // Start begins immediately, then the same control stops it at unchanged volume.
   await page.locator("#rhythmStart").click();
@@ -134,7 +135,7 @@ const { chromium } = require("playwright");
   await stopRhythm();
   await page.locator("#rhythmStart").click();
   await waitStarted();
-  await page.evaluate(() => document.activeElement.blur());
+  // A focused Rhythm button must not restart drums on Space release.
   await page.keyboard.press("Space");
   await waitStopped();
   assert.equal(await volume(), "0.4");

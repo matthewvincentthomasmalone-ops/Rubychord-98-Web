@@ -51,7 +51,7 @@ Preset chord and keyboard loop points are converted from source frames to second
 - **Chord Hold:** retain the selected chord after release. **Manual/Auto:** sustained chord versus sequenced chord and bass.
 - **Rhythm Start/Stop and Sync Start:** drums and Sync Start are off by default. The blue Rhythm button starts drums immediately. While drums are playing, press it again to stop them without changing Rhythm Volume. Stopped drums stay off while you play. Click the Sync Start control to arm drums for the next chord/keyboard-note press; click it again to disarm. Releasing a note leaves drums playing. Pattern/keyboard mode changes retain the beat. Power Off stops the instrument.
 - **Strumplate:** tap or sweep vertically; higher zones are at the top. Fast pointer moves trigger every crossed region. Pointer capture and per-pointer tracking support touch.
-- **Space:** fade out all voices and stop drums, including pending note/rhythm requests.
+- **Space:** fade out all voices and stop drums, including pending note/rhythm requests, even with an instrument or page button focused. Enter activates a focused chord button. The Space shortcut is explained in the playing guide, without an extra stop control on the page.
 - **Keyboard:** chord buttons play individual sampled keyboard notes and the strumplate triggers drums. This is a simplified keyboard mode, not the complete hardware overlay map.
 - **Knobs:** drag vertically, Shift-drag for finer adjustment, mouse wheel, arrows, Page Up/Down, Home/End. Accessible values exist without faceplate numeric readouts.
 

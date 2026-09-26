@@ -265,8 +265,13 @@ require("node:fs").mkdirSync("test-results", { recursive: true });
   await page.locator("#keyboard").click();
   await page.keyboard.down("r");
   assert.equal(await page.locator("#statusText").textContent(), "C");
-  await page.evaluate(() => document.activeElement.blur());
+  await page.locator("#fitToggle").focus();
   await page.keyboard.press("Space");
+  assert.equal(
+    await page.locator("#fitToggle").getAttribute("aria-pressed"),
+    "false",
+  );
+  assert.equal(await page.evaluate(() => keyboardTestEngine.powered), true);
   assert.equal(await page.locator("#statusText").isVisible(), false);
   assert.equal(await page.locator("#statusText").textContent(), "");
   await page.keyboard.up("r");
