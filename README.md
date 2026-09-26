@@ -55,7 +55,7 @@ Preset chord and keyboard loop points are converted from source frames to second
 - **Keyboard:** chord buttons play individual sampled keyboard notes and the strumplate triggers drums. This is a simplified keyboard mode, not the complete hardware overlay map.
 - **Knobs:** drag vertically, Shift-drag for finer adjustment, mouse wheel, arrows, Page Up/Down, Home/End. Accessible values exist without faceplate numeric readouts.
 
-Computer keys: Q–O major, A–L minor, Z–. seventh, ordered E♭ B♭ F C G D A E B. Backslash gives F♯ major. 1–= gives the first twelve strum regions, + the thirteenth. Keyboard and connection instructions are in the external settings drawer.
+Computer keys: Q–O major, A–L minor, Z–. seventh, ordered E♭ B♭ F C G D A E B. P gives F♯ major. 1–= gives the first twelve strum regions, + the thirteenth. Keyboard and connection instructions are in the external settings drawer.
 
 The instrument scales as one surface. Desktop scaling accounts for viewport height. Narrow screens retain a horizontally scrollable playing size; “Fit instrument” offers an overview. Landscape provides more playable room.
 
