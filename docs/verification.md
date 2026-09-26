@@ -29,3 +29,10 @@ No subjective listening comparison against Online Omnichord or a physical OM-108
 - Original audio regression suite still passes with FLAC delivery and staged loading; full background decode reaches 277 recordings.
 - Geometry checks sample every panel/speaker perimeter against the inset body boundary. All outlines remain inside, with ≥5 design pixels of separation from the body border and from one another. Removed diagonal chord guide lines and moved/re-shaped panels that previously crossed the rim.
 - Power pointer click has computed outline style `none`. Restored the original LA image and pink overlay, with desktop/tablet/mobile screenshot review.
+
+## Rhythm Start/Stop correction
+
+- `tests/rhythm.cjs` exercises the real app: blue Start begins drums immediately; pressing it while running stops drums without changing Rhythm Volume. Further chord presses leave drums off until the separate Sync Start control is explicitly armed.
+- Sync Start latches from a brief chord or keyboard-note press even while an unrelated chord recording is blocked. Releasing buttons does not stop drums. Pattern/keyboard-mode changes and window blur retain an active beat.
+- Instant Off and Space stop every sound. Pending first-load rhythm requests are cancelled by explicit stop and by Power cycles. Releasing one key in a held chord combination cannot undo a manual stop.
+- Simulated Serial `RHYTHM STOP` still invokes the actual rhythm stop command; no volume mutation is substituted.

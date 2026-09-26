@@ -49,9 +49,9 @@ Preset chord and keyboard loop points are converted from source frames to second
 - **M7:** Major + 7th; **m7:** Minor + 7th; **dim:** Major + Minor; **aug:** all three, on the same root.
 - **sus4:** Major + fourth-root 7th (immediately left); **add9:** Major + fourth-root Minor.
 - **Chord Hold:** retain the selected chord after release. **Manual/Auto:** sustained chord versus sequenced chord and bass.
-- **Rhythm Start/Sync Start:** continuous rhythm versus start/stop with chord playing; Hold also holds synced rhythm.
+- **Rhythm Start/Stop and Sync Start:** the blue Rhythm button starts drums immediately. While drums are playing, press it again to stop them without changing Rhythm Volume. Stopped drums stay off while you play. Click the Sync Start control to arm drums for the next chord/keyboard-note press; click it again to disarm. Releasing a note leaves drums playing. Pattern/keyboard mode changes retain the beat. Power Off stops the instrument.
 - **Strumplate:** tap or sweep vertically; higher zones are at the top. Fast pointer moves trigger every crossed region. Pointer capture and per-pointer tracking support touch.
-- **Instant Off / Space:** fade out all voices and stop the rhythm scheduler, including pending note requests.
+- **Instant Off / Space:** fade out all voices and stop drums, including pending note/rhythm requests.
 - **Keyboard:** chord buttons play individual sampled keyboard notes and the strumplate triggers drums. This is a simplified keyboard mode, not the complete hardware overlay map.
 - **Knobs:** drag vertically, Shift-drag for finer adjustment, mouse wheel, arrows, Page Up/Down, Home/End. Accessible values exist without faceplate numeric readouts.
 
@@ -79,6 +79,8 @@ RHYTHM STOP
 OFF
 ```
 
+`RHYTHM STOP` stops drums without changing their volume. `OFF` silences all audio.
+
 Chord quality tokens also include `7`, `AUG`, `DIM`, `SUS4`, `ADD9`. Invalid note/strum numbers are ignored.
 
 Current Chromium is the tested target. Web Audio is expected in current Firefox and Safari but has not been tested here. MIDI/Serial availability is feature-detected; device permissions require localhost or HTTPS. No physical MIDI or Serial device was available for testing.
@@ -88,7 +90,6 @@ Current Chromium is the tested target. Web Audio is expected in current Firefox 
 - The supplied library captures an OM-84, not all OM-108 voices. Eight digital voice selections are explicit synthesized approximations. Omni1 main uses the dry SonicStrings bank; its sub uses the tremolo bank. Omni2's string subvoice uses a keyboard-bank approximation. Exact digital main/sub recordings are still required.
 - Sus4/add9 complete chord recordings are absent; local keyboard multisamples construct them. All ten rhythm timings are programmed approximations using authentic hits, not measured OM-108 patterns.
 - Continuous finger-held strum sustain, repeated-tap arpeggio cycling, exact keyboard/drum overlay and mono last-note priority are not emulated. Tuning, transpose, octave-shift hardware shortcuts and MIDI OUT remain unimplemented.
-- Instant Off deliberately silences all audio, even in continuous rhythm mode; the hardware can leave that rhythm running.
 - Silhouette/control placement was compared visually against the official manual diagram, not a supplied photograph (none was attached). Lettering, materials and some legends remain approximations.
 - No listening A/B or hardware latency measurement was performed. Browser playback, mapping and numerical loop checks are not proof of sonic authenticity.
 
@@ -109,6 +110,7 @@ NODE_PATH=/tmp/rubychord-tests/node_modules node tests/browser.cjs
 NODE_PATH=/tmp/rubychord-tests/node_modules node tests/audio.cjs
 NODE_PATH=/tmp/rubychord-tests/node_modules node tests/loading.cjs
 NODE_PATH=/tmp/rubychord-tests/node_modules node tests/presentation.cjs
+NODE_PATH=/tmp/rubychord-tests/node_modules node tests/rhythm.cjs
 ```
 
 Set `CHROME_PATH` if Chrome is not at `/usr/bin/google-chrome`. Screenshots are written to ignored `test-results/`.

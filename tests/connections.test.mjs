@@ -21,7 +21,7 @@ const reader = {
       ? { done: true }
       : {
           value: new TextEncoder().encode(
-            "CHORD C MAJOR\nSTRUM 13\nSTRUM nope\nNOTE 60 100\nNOTEOFF 60\nOFF\n",
+            "CHORD C MAJOR\nSTRUM 13\nSTRUM nope\nNOTE 60 100\nNOTEOFF 60\nRHYTHM STOP\nOFF\n",
           ),
           done: false,
         };
@@ -44,6 +44,7 @@ const devices = connectDevices({
     midiNoteOff: (...x) => calls.push(["off", ...x]),
     strum: (i) => calls.push(["strum", i]),
     stopAll: () => calls.push(["stop"]),
+    stopRhythm: () => calls.push(["rhythm-stop"]),
   },
   selectChord: (c) => calls.push(["chord", c]),
   applyControl: (...x) => calls.push(["cc", ...x]),
@@ -69,6 +70,7 @@ assert.deepEqual(calls, [
   ["strum", 12],
   ["on", 60, 100 / 127],
   ["off", 60],
+  ["rhythm-stop"],
   ["stop"],
 ]);
 devices.clear();
